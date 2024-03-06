@@ -123,7 +123,7 @@ param avdDeployScalingPlan bool = true
 param createAvdVnet bool = false
 
 @sys.description('Existing virtual network subnet for AVD. (Default: "")')
-param existingVnetAvdSubnetResourceId string = 'f68ddc0f-c8b7-4c07-8025-4c83796d25ca'
+param existingVnetAvdSubnetResourceId string = ''
 
 @sys.description('Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''

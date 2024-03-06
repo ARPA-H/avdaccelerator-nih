@@ -90,7 +90,7 @@
         "value": "AVD App Group 001"
       },
       "avdSessionHostCustomNamePrefix": {
-        "value": "avdb01"
+        "value": "avdc"
       },
       "avsetCustomNamePrefix": {
         "value": "avail"
@@ -183,7 +183,7 @@
           "value": false
       },
       "createAvdFslogixDeployment": {
-          "value": true
+          "value": false
       },
       "createMsixDeployment": {
           "value": false
@@ -258,7 +258,7 @@
           "value": false
       },
       "deployAlaWorkspace": {
-          "value": true
+          "value": false
       },
       "deployCustomPolicyMonitoring": {
         "value": false
