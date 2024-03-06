@@ -1,0 +1,289 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPrefix": {
+            "value": "AVDB"
+        },
+        "deploymentEnvironment": {
+          "value": "Dev"
+      },
+        "avdUseCustomNaming": {
+            "value": false
+        },
+        "avdSessionHostLocation": {
+            "value": "westus2"
+        },
+        "avdManagementPlaneLocation": {
+            "value": "westus2"
+        },
+        "avdDeployMonitoring": {
+            "value": false
+        },   
+        "avdWorkloadSubsId": {
+            "value": ""
+        },
+        "avdVmLocalUserName": {
+          "value": ""
+        },
+       "avdServiceObjectsRgCustomName": {
+        "value": "RG-AVD-WUS2-Services"
+        },
+        "avdNetworkObjectsRgCustomName": {
+        "value": "RG-AVD-WUS2-Network"
+        },
+        "avdComputeObjectsRgCustomName": {
+        "value": "RG-AVD-WUS2-Compute"
+        },
+        "avdStorageObjectsRgCustomName": {
+            "value": "RG-AVD-WUS2-Storage"
+        },
+        "avdMonitoringRgCustomName": {
+          "value": "RG-AVD-WUS2-Monitoring"
+        },
+        "avdVnetworkCustomName": {
+          "value": "vnet-avd-001"
+        },
+        "avdAlaWorkspaceCustomName": {
+          "value": "log-avd-001"
+        },
+        "privateEndpointVnetworkSubnetCustomName": {
+          "value": "snet-pe-avd-001"
+        },
+        "avdVnetworkSubnetCustomName": {
+          "value": "snet-avd-001"
+        },
+        "avdNetworksecurityGroupCustomName": {
+          "value": "nsg-avd-001"
+        },
+        "privateEndpointNetworksecurityGroupCustomName": {
+          "value": "nsg-pe-avd-001"
+        },
+        "avdRouteTableCustomName": {
+          "value": "route-avd-001"
+        },
+        "privateEndpointRouteTableCustomName": {
+          "value": "route-pe-avd-001"
+        },
+        "avdApplicationSecurityGroupCustomName": {
+          "value": "asg-avd-001"
+        },
+        "avdWorkSpaceCustomName": {
+          "value": "ws-avd-wus2"
+        },
+        "avdWorkSpaceCustomFriendlyName": {
+          "value": "avd - West"
+        },
+        "avdHostPoolCustomName": {
+          "value": "hostpool-avd-West-001"
+        },
+        "avdHostPoolCustomFriendlyName": {
+          "value": "hostpool avd West"
+        },
+        "avdScalingPlanCustomName": {
+          "value": "avd-scaling-001"
+        },
+        "avdApplicationGroupCustomName": {
+          "value": "avd-appgroup-001"
+        },
+        "avdApplicationGroupCustomFriendlyName": {
+          "value": "AVD App Group 001"
+        },
+        "avdSessionHostCustomNamePrefix": {
+          "value": "avdb01"
+        },
+        "avsetCustomNamePrefix": {
+          "value": "avail"
+        },
+        "avdVmLocalUserPassword": {
+            "value": ""
+        },
+        "avdIdentityServiceProvider": {
+            "value": "EntraID"
+        },
+        "identityDomainGuid": {
+          "value": ""
+        },     
+        "createIntuneEnrollment": {
+            "value": false
+        },            
+        "securityPrincipalId": {
+            "value": ""
+        },        
+        "securityPrincipalName": {
+            "value": ""
+        },       
+        "identityDomainName": {
+            "value": "none"
+        },
+        "avdOuPath": {
+            "value": ""
+        },
+        "avdHostPoolType": {
+            "value": "Pooled"
+        },
+        "hostPoolPreferredAppGroupType": {
+            "value": "Desktop"
+        },
+        "avdPersonalAssignType": {
+            "value": "Automatic"
+        },
+        "avdHostPoolLoadBalancerType": {
+            "value": "BreadthFirst"
+        },
+        "hostPoolMaxSessions": {
+            "value": 8
+        },
+        "avdStartVmOnConnect": {
+            "value": true
+        },
+        "avdHostPoolRdpProperties": {
+            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2"
+        },
+        "avdDeployScalingPlan": {
+            "value": true
+        },
+        "createAvdVnet": {
+            "value": true
+        },
+        "existingVnetAvdSubnetResourceId": {
+            "value": ""
+        },
+        "existingVnetPrivateEndpointSubnetResourceId": {
+            "value": ""
+        },
+        "existingHubVnetResourceId": {
+            "value": ""
+        },
+        "avdVnetworkAddressPrefixes": {
+            "value": "10.10.0.0/23"
+        },
+        "vNetworkAvdSubnetAddressPrefix": {
+            "value": "10.10.0.0/24"
+        },
+        "vNetworkPrivateEndpointSubnetAddressPrefix": {
+            "value": "10.10.1.0/27"
+        },
+        "customDnsIps": {
+            "value": ""
+        },
+        "deployPrivateEndpointKeyvaultStorage": {
+          "value": true
+        },
+        "createPrivateDnsZones": {
+            "value": true
+        },
+        "avdVnetPrivateDnsZoneFilesId": {
+            "value": ""
+        },
+        "avdVnetPrivateDnsZoneKeyvaultId": {
+            "value": ""
+        },
+        "vNetworkGatewayOnHub": {
+            "value": false
+        },
+        "createAvdFslogixDeployment": {
+            "value": true
+        },
+        "createMsixDeployment": {
+            "value": false
+        },
+        "fslogixFileShareQuotaSize": {
+            "value": 1
+        },
+        "msixFileShareQuotaSize": {
+            "value": 1
+        },
+        "avdDeploySessionHosts": {
+            "value": true
+        },
+        "avdDeploySessionHostsCount": {
+            "value": 1
+        },
+        "avdSessionHostCountIndex": {
+            "value": 0
+        },
+        "availabilityZonesCompute": {
+            "value": true
+        },
+        "zoneRedundantStorage": {
+            "value": false
+        },
+        "avsetFaultDomainCount": {
+            "value": 2
+        },
+        "avsetUpdateDomainCount": {
+            "value": 5
+        },
+        "fslogixStoragePerformance": {
+            "value": "Premium"
+        },
+        "msixStoragePerformance": {
+            "value": "Premium"
+        },
+        "avdSessionHostsSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "avdSessionHostDiskType": {
+            "value": "Premium_LRS"
+        },
+        "customOsDiskSizeGb": {
+          "value": ""
+        },
+        "avdOsImage": {
+            "value": "win11_23h2_office"
+        },
+        "managementVmOsImage": {
+            "value": "winServer_2022_Datacenter_smalldisk_g2"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        },
+        "secureBootEnabled": {
+            "value": true
+        },
+        "vTpmEnabled": {
+            "value": true
+        },
+        "useSharedImage": {
+            "value": false
+        },
+        "avdImageTemplateDefinitionId": {
+            "value": ""
+        },
+        "storageOuPath": {
+            "value": ""
+        },
+        "createResourceTags": {
+            "value": false
+        },
+        "deployAlaWorkspace": {
+            "value": true
+        },
+        "deployCustomPolicyMonitoring": {
+          "value": false
+        },  
+        "alaExistingWorkspaceResourceId": {
+            "value": ""
+        },           
+        "avdAlaWorkspaceDataRetention": {
+            "value": 90
+        },
+        "enableAcceleratedNetworking": {
+            "value": true
+        },
+        "diskEncryptionKeyExpirationInDays": {
+            "value": 60
+        },
+        "diskZeroTrust": {
+            "value": false
+        },
+        "enableKvPurgeProtection": {
+            "value": true
+        },
+        "deployGpuPolicies": {
+            "value": false
+        }
+    }
+  }
+  
