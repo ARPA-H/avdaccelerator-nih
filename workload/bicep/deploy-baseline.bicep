@@ -285,7 +285,7 @@ param avdImageTemplateDefinitionId string = ''
 param storageOuPath string = ''
 
 // Custom Naming
-// Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
+// Input must follow resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @sys.description('AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
