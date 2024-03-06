@@ -21,5 +21,5 @@ jobs:
         region: eastus2
         resourceGroupName: ${{ secrets.AVD01_AZURE_RG }}
         template: ./workload/bicep/deploy-baseline.bicep
-        parameters: ./workload/bicep/deploy-baseline.parameters.json avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserPassword=${{ secrets.AVD01_LOCAL_ADMINPWD }} avdDomainJoinUserPassword=${{ secrets.AVD01_LOCAL_ADMINPWD }} avdEnterpriseAppObjectId=${{ secrets.AVD_OBJID }} avdVmLocalUserName=${{ secrets.AVD01_LOCAL_ADMINACCOUNT }}
+        parameters: ./workload/bicep/deploy-baseline.parameters.json avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserPassword=${{ secrets.AVD01_LOCAL_ADMINPWD }} avdDomainJoinUserPassword=${{ secrets.AVD01_LOCAL_ADMINPWD }} avdEnterpriseAppObjectId=${{ secrets.AVD_OBJID }} avdVmLocalUserName=${{ secrets.AVD01_LOCAL_ADMINACCOUNT }} securityPrincipalId=${{ secrets.AVDACCESS }}
         failOnStdErr: false

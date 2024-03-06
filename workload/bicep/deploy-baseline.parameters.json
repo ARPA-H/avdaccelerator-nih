@@ -111,7 +111,7 @@
           "value": ""
       },        
       "securityPrincipalName": {
-          "value": ""
+          "value": "AVDAccess"
       },       
       "identityDomainName": {
           "value": "none"
