@@ -1587,7 +1587,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-personal-hostpool.bicep' =
         networking
         wrklKeyVault
         monitoringDiagnosticSettings
-        vmScaleSetFlex
+        //vmScaleSetFlex
         managementPLane
     ]
   }
