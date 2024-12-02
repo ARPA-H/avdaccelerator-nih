@@ -1079,7 +1079,7 @@ module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-grou
 }
 
 // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
-module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
+module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy-personal-hostpool.bicep' = if (avdDeployMonitoring) {
     name: 'Monitoring-${time}'
     params: {
         location: avdManagementPlaneLocation
@@ -1106,7 +1106,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
+module networking './modules/networking/deploy-personal-hostpool.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet
@@ -1151,7 +1151,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     ]
 }
 
-module managementPLane './modules/avdManagementPlane/deploy-personal-pool-arpah.bicep' = {
+module managementPLane './modules/avdManagementPlane/deploy-personal-hostpool.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
         applicationGroupName: varApplicationGroupName
@@ -1520,7 +1520,7 @@ resource wrklKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // Session hosts
 @batchSize(3)
-module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
+module sessionHosts './modules/avdSessionHosts/deploy-personal-hostpool.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
@@ -1582,7 +1582,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         hostPoolName: managementPLane.outputs.desktopHostPoolName
     }
     dependsOn: [
-        fslogixAzureFilesStorage
+        //fslogixAzureFilesStorage
         baselineResourceGroups
         networking
         wrklKeyVault
