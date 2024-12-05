@@ -264,32 +264,32 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
   }
 }
 
-// remote applications host pool creation.
-module hostPoolRemoteApps '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: 'HostPoolRA-${time}'
-  params: {
-    name: remoteHostPoolName
-    friendlyName: remoteHostPoolFriendlyName
-    location: managementPlaneLocation
-    hostPoolType: hostPoolType
-    startVMOnConnect: startVmOnConnect
-    customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
-    loadBalancerType: hostPoolLoadBalancerType
-    maxSessionLimit: hostPoolMaxSessions
-    preferredAppGroupType: preferredRemoteAppGroupType
-    personalDesktopAssignmentType: personalAssignType
-    keyVaultResourceId: keyVaultResourceId
-    tags: tags
-    diagnosticSettings: varDiagnosticSettings
-    agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
-        maintenanceWindows: hostPoolAgentUpdateSchedule
-        maintenanceWindowTimeZone: computeTimeZone
-        type: 'Scheduled'
-        useSessionHostLocalTime: true
-    }: {}
-  }
-}
+// // remote applications host pool creation.
+// module hostPoolRemoteApps '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//   name: 'HostPoolRA-${time}'
+//   params: {
+//     name: remoteHostPoolName
+//     friendlyName: remoteHostPoolFriendlyName
+//     location: managementPlaneLocation
+//     hostPoolType: hostPoolType
+//     startVMOnConnect: startVmOnConnect
+//     customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
+//     loadBalancerType: hostPoolLoadBalancerType
+//     maxSessionLimit: hostPoolMaxSessions
+//     preferredAppGroupType: preferredRemoteAppGroupType
+//     personalDesktopAssignmentType: personalAssignType
+//     keyVaultResourceId: keyVaultResourceId
+//     tags: tags
+//     diagnosticSettings: varDiagnosticSettings
+//     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
+//         maintenanceWindows: hostPoolAgentUpdateSchedule
+//         maintenanceWindowTimeZone: computeTimeZone
+//         type: 'Scheduled'
+//         useSessionHostLocalTime: true
+//     }: {}
+//   }
+// }
 
 // Application groups.
 module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varApplicationGroups: {
@@ -316,30 +316,30 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
   ]
 }]
 
-// RemoteApp application groups.
-module remoteApplicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varRemoteApplicationGroups: {
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: '${applicationGroup.name}-${time}'
-  params: {
-    name: applicationGroup.name
-    friendlyName: applicationGroup.friendlyName
-    location: applicationGroup.location
-    applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: remoteHostPoolName
-    tags: tags
-    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
-    roleAssignments: !empty(securityPrincipalId) ? [
-      {      
-        roleDefinitionIdOrName: 'Desktop Virtualization User'
-        principalId: securityPrincipalId
-      }
-    ]: []
-    diagnosticSettings: varDiagnosticSettings
-  }
-  dependsOn: [
-    hostPoolRemoteApps
-  ]
-}]
+// // RemoteApp application groups.
+// module remoteApplicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varRemoteApplicationGroups: {
+//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//   name: '${applicationGroup.name}-${time}'
+//   params: {
+//     name: applicationGroup.name
+//     friendlyName: applicationGroup.friendlyName
+//     location: applicationGroup.location
+//     applicationGroupType: applicationGroup.applicationGroupType
+//     hostpoolName: remoteHostPoolName
+//     tags: tags
+//     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
+//     roleAssignments: !empty(securityPrincipalId) ? [
+//       {      
+//         roleDefinitionIdOrName: 'Desktop Virtualization User'
+//         principalId: securityPrincipalId
+//       }
+//     ]: []
+//     diagnosticSettings: varDiagnosticSettings
+//   }
+//   dependsOn: [
+//     hostPoolRemoteApps
+//   ]
+// }]
 
 // Workspace.
 module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
@@ -351,16 +351,16 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       location: managementPlaneLocation
       applicationGroupReferences: [
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
-        '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${remoteAppApplicationGroupName}'
+        // '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${remoteAppApplicationGroupName}'
       ]
       tags: tags
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
     hostPool
-    hostPoolRemoteApps
+    // hostPoolRemoteApps
     applicationGroups
-    remoteApplicationGroups
+    // remoteApplicationGroups
   ]
 }
 
@@ -390,9 +390,9 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
   }
   dependsOn: [
     hostPool
-    hostPoolRemoteApps
+    // hostPoolRemoteApps
     applicationGroups
-    remoteApplicationGroups
+    // remoteApplicationGroups
     workSpace
   ]
 }

@@ -1520,7 +1520,7 @@ resource wrklKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // Session hosts
 @batchSize(3)
-module sessionHosts './modules/avdSessionHosts/deploy-personal-hostpool.bicep' = [
+module sessionHosts './modules/avdSessionHosts/deploy-personal-sessionhost.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
