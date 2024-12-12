@@ -296,23 +296,23 @@ param avdUseCustomNaming bool = true
 
 @maxLength(90)
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
-param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-service-objects'
+param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-service-objects'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-network'
+param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-pool-compute'
+param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-pool-compute'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
@@ -320,7 +320,7 @@ param avdVnetworkCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironm
 
 @maxLength(64)
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
-param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-log'
+param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-log'
 
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
@@ -332,7 +332,7 @@ param privateEndpointVnetworkSubnetCustomName string = 'avd-nih-arpah-${toLower(
 
 @maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
-param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-nsg'
+param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-nsg'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
@@ -639,7 +639,7 @@ var varAlaWorkspaceName = avdUseCustomNaming
     ? avdAlaWorkspaceCustomName 
     : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 //var varDataCollectionRulesName = 'microsoft-avdi-${varSessionHostLocationLowercase}' // 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
-var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-ph'
+var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-pdsh'
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
     : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
