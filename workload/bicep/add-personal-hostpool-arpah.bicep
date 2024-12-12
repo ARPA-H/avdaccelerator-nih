@@ -340,7 +340,7 @@ param privateEndpointNetworksecurityGroupCustomName string = 'avd-nih-arpah-${to
 
 @maxLength(80)
 @sys.description('AVD route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param avdRouteTableCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-ph-route'
+param avdRouteTableCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-route'
 
 @maxLength(80)
 @sys.description('Private endpoint route table custom name. (Default: route-avd-app1-dev-use2-001)')
@@ -348,11 +348,11 @@ param privateEndpointRouteTableCustomName string = 'route-pe-app1-${toLower(depl
 
 @maxLength(80)
 @sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-ph-001'
+param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
-param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment)}-use2-001'
+param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
@@ -360,7 +360,7 @@ param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploym
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-001'
+param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
@@ -368,11 +368,11 @@ param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deployme
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
-param avdScalingPlanCustomName string = 'vdscaling-app1-${toLower(deploymentEnvironment)}-use2-001'
+param avdScalingPlanCustomName string = 'vdscaling-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-ph-001'
+param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
@@ -1106,7 +1106,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy-pers
 }
 
 // Networking
-module networking './modules/networking/deploy-personal-hostpool.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
+module networking './modules/networking/deploy-network-for-admin-sessionhost.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet

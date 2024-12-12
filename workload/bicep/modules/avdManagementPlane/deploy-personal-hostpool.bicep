@@ -400,7 +400,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
 @sys.description('The name of the desktop host pool.')
 output desktopHostPoolName string = hostPoolName
 
-@sys.description('The name of the remote app host pool.')
-output remoteAppHostPoolName string = remoteHostPoolName
+// @sys.description('The name of the remote app host pool.')
+// output remoteAppHostPoolName string = remoteHostPoolName
 
 
