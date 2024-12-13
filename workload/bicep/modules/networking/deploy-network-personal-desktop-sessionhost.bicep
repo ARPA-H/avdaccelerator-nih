@@ -556,31 +556,31 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
 }
 
 // Private DNS zones Azure files
-module privateDnsZoneAzureFiles '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones) {
-  scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-  name: 'Private-DNS-Files-${time}'
-  params: {
-    name: privateDnsZoneNames.StorageFiles
-    virtualNetworkLinks: varVirtualNetworkLinks
-    tags: tags
-  }
-}
+// module privateDnsZoneAzureFiles '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones) {
+//   scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+//   name: 'Private-DNS-Files-${time}'
+//   params: {
+//     name: privateDnsZoneNames.StorageFiles
+//     virtualNetworkLinks: varVirtualNetworkLinks
+//     tags: tags
+//   }
+// }
 
 // Private DNS zones key vault
-module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones) {
-  scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-  name: 'Private-DNS-Kv-${time}'
-  params: {
-    name: privateDnsZoneNames.KeyVault
-    virtualNetworkLinks: varVirtualNetworkLinks
-    tags: tags
-  }
-}
+// module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones) {
+//   scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+//   name: 'Private-DNS-Kv-${time}'
+//   params: {
+//     name: privateDnsZoneNames.KeyVault
+//     virtualNetworkLinks: varVirtualNetworkLinks
+//     tags: tags
+//   }
+// }
 
 // =========== //
 // Outputs //
 // =========== //
 output applicationSecurityGroupResourceId string = deployAsg ? applicationSecurityGroup.outputs.resourceId : ''
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
-output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
-output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
+// output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
+// output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''

@@ -593,7 +593,7 @@ var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStand
 var varWrklKvName = avdUseCustomNaming 
     ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}' 
     : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
-var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
+var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-pdsh-vault'
 var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') 
     ? 'premium' 
     : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
@@ -603,7 +603,7 @@ var varSessionHostNamePrefix = avdUseCustomNaming
 var varVmssFlexNamePrefix = avdUseCustomNaming
   ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}'
   : 'vmss-${varComputeStorageResourcesNamingStandard}'
-var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
+var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-pdsh-001'
 var varFslogixFileShareName = avdUseCustomNaming 
     ? fslogixFileShareCustomName 
     : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -614,12 +614,12 @@ var varMsixFileShareName = avdUseCustomNaming
     ? msixFileShareCustomName 
     : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}-pdsh-biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 
 // for remote apps
 var varFslogixStorageNameRemote = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}ra' 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}-pdsh-ra' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 
 var varFslogixStorageFqdn = createAvdFslogixDeployment 
@@ -1105,8 +1105,13 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy-pers
     ]
 }
 
+resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+    name: varExistingAvdVnetName
+    scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+}
+
 // Networking
-module networking './modules/networking/deploy-network-for-admin-sessionhost.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
+module networking './modules/networking/deploy-network-personal-desktop-sessionhost.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet
