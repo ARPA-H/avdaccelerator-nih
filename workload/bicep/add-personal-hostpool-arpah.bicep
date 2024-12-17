@@ -601,7 +601,7 @@ var varSessionHostNamePrefix = avdUseCustomNaming
     ? avdSessionHostCustomNamePrefix 
     : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varVmssFlexNamePrefix = avdUseCustomNaming
-  ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}'
+  ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}-pdsh'
   : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-pdsh-001'
 var varFslogixFileShareName = avdUseCustomNaming 
@@ -643,7 +643,7 @@ var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-$
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
     : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
-var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
+var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-pdsh-vault'
 //
 var varFslogixSharePath = createAvdFslogixDeployment 
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
