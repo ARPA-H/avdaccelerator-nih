@@ -124,6 +124,21 @@ param createAvdVnet bool = true
 @sys.description('Existing virtual network subnet for AVD. (Default: "")')
 param existingVnetAvdSubnetResourceId string = ''
 
+@sys.description('AVD network resources resource group existing name. (Default: "")')
+param existingavdServiceObjectsRGResourceId string = ''
+
+@sys.description('AVD network resources resource group existing name. (Default: "")')
+param existingavdNetworkObjectsRGResourceId string = ''
+
+@sys.description('AVD network resources resource group existing name. (Default: "")')
+param existingavdComputeObjectsRGResourceId string = ''
+
+@sys.description('AVD network resources resource group existing name. (Default: "")')
+param existingavdStorageObjectsRGResourceId string = ''
+
+@sys.description('AVD network resources resource group existing name. (Default: "")')
+param existingavdMonitoringRGResourceId string = ''
+
 @sys.description('Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
@@ -294,25 +309,28 @@ param storageOuPath string = ''
 @sys.description('AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = true
 
+@sys.description('AVD resources custom naming. (Default: false)')
+param UseCustomNaming bool = false
+
 @maxLength(90)
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
-param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-service-objects'
+param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-service-objects'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-network'
+param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-pool-compute'
+param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pool-compute'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
@@ -524,21 +542,21 @@ var varZtManagedIdentityName = avdUseCustomNaming
     : 'id-zt-${varComputeStorageResourcesNamingStandard}-001'
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
-var varServiceObjectsRgName = avdUseCustomNaming 
+var varServiceObjectsRgName = UseCustomNaming 
     ? avdServiceObjectsRgCustomName 
-    : 'rg-avd-${varManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
-var varNetworkObjectsRgName = avdUseCustomNaming 
+    : existingavdServiceObjectsRGResourceId // max length limit 90 characters
+var varNetworkObjectsRgName = UseCustomNaming 
     ? avdNetworkObjectsRgCustomName 
-    : 'rg-avd-${varComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
-var varComputeObjectsRgName = avdUseCustomNaming 
+    : existingavdNetworkObjectsRGResourceId // max length limit 90 characters
+var varComputeObjectsRgName = UseCustomNaming 
     ? avdComputeObjectsRgCustomName 
-    : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
-var varStorageObjectsRgName = avdUseCustomNaming 
+    : existingavdComputeObjectsRGResourceId // max length limit 90 characters
+var varStorageObjectsRgName = UseCustomNaming 
     ? avdStorageObjectsRgCustomName 
-    : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
-var varMonitoringRgName = avdUseCustomNaming 
+    : existingavdStorageObjectsRGResourceId // max length limit 90 characters
+var varMonitoringRgName = UseCustomNaming 
     ? avdMonitoringRgCustomName 
-    : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
+    : existingavdMonitoringRGResourceId // max length limit 90 characters
 var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
 var varHubVnetName = (createAvdVnet && !empty(existingHubVnetResourceId)) 
     ? split(existingHubVnetResourceId, '/')[8] 

@@ -11,6 +11,24 @@
         "avdUseCustomNaming": {
             "value": true
         },
+        "UseCustomNaming": {
+            "value": false
+        },
+        "existingavdServiceObjectsRGResourceId": {
+            "value": ""
+        },
+        "existingavdNetworkObjectsRGResourceId": {
+            "value": ""
+        },
+        "existingavdComputeObjectsRGResourceId": {
+            "value": ""
+        },
+        "existingavdStorageObjectsRGResourceId": {
+            "value": ""
+        },
+        "existingavdMonitoringRGResourceId": {
+            "value": ""
+        },
         "avdSessionHostCustomNamePrefix": {
             "value": "arpahavd"
         },
