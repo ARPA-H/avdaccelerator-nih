@@ -1105,11 +1105,6 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy-pers
     ]
 }
 
-resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-    name: varExistingAvdVnetName
-    scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
-}
-
 // Networking
 module networking './modules/networking/deploy-network-personal-desktop-sessionhost.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Networking-${time}'
@@ -1267,7 +1262,6 @@ resource wrklKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
     
 }
-
 
 // module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
 //     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
