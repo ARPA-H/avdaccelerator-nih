@@ -142,6 +142,13 @@ param existingavdMonitoringRGResourceId string = ''
 @sys.description('Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
+@sys.description('Name of an existing ASG to associate with the network interface. Leave blank if no ASG is required.')
+param existingApplicationSecurityGroup string = ''
+
+@sys.description('Name of an existing NSG to associate with the network interface. Leave blank if no NSG is required.')
+param existingNetworkSecurityGroup string = ''
+
+
 @sys.description('Existing hub virtual network for perring. (Default: "")')
 param existingHubVnetResourceId string = ''
 
@@ -338,7 +345,7 @@ param avdVnetworkCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironm
 
 @maxLength(64)
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
-param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-log'
+param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-log'
 
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
@@ -350,7 +357,7 @@ param privateEndpointVnetworkSubnetCustomName string = 'avd-nih-arpah-${toLower(
 
 @maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
-param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pdsh-nsg'
+param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-nsg'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
@@ -366,7 +373,7 @@ param privateEndpointRouteTableCustomName string = 'route-pe-app1-${toLower(depl
 
 @maxLength(80)
 @sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-pdsh-001'
+param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
@@ -492,6 +499,9 @@ param ownerTag string = 'workload-owner@arpa-h.gov'
 @sys.description('Cost center of owner team. (Default: Contoso-CC)')
 param costCenterTag string = 'ARPA-H-CC'
 
+@sys.description('Name of the existing AVD Data Collection Rule to be referenced in the deployment.')
+param existingavdDCRResourceId string = ''
+
 //@sys.description('Remove resources not needed afdter deployment. (Default: false)')
 //param removePostDeploymentTempResources bool = false
 
@@ -569,9 +579,9 @@ var varVnetAvdSubnetName = avdUseCustomNaming
 var varVnetPrivateEndpointSubnetName = avdUseCustomNaming 
     ? privateEndpointVnetworkSubnetCustomName 
     : 'snet-pe-${varComputeStorageResourcesNamingStandard}-001'
-var varAvdNetworksecurityGroupName = avdUseCustomNaming 
+var varAvdNetworksecurityGroupName = UseCustomNaming 
     ? avdNetworksecurityGroupCustomName 
-    : 'nsg-avd-${varComputeStorageResourcesNamingStandard}-001'
+    : existingNetworkSecurityGroup
 var varPrivateEndpointNetworksecurityGroupName = avdUseCustomNaming 
     ? privateEndpointNetworksecurityGroupCustomName 
     : 'nsg-pe-${varComputeStorageResourcesNamingStandard}-001'
@@ -581,9 +591,9 @@ var varAvdRouteTableName = avdUseCustomNaming
 var varPrivateEndpointRouteTableName = avdUseCustomNaming 
     ? privateEndpointRouteTableCustomName 
     : 'route-pe-${varComputeStorageResourcesNamingStandard}-001'
-var varApplicationSecurityGroupName = avdUseCustomNaming 
+var varApplicationSecurityGroupName = UseCustomNaming 
     ? avdApplicationSecurityGroupCustomName 
-    : 'asg-${varComputeStorageResourcesNamingStandard}-001'
+    : existingApplicationSecurityGroup
 var varDDosProtectionPlanName = 'ddos-${varVnetName}'
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
 var varWorkSpaceFriendlyName = avdUseCustomNaming 
@@ -653,11 +663,14 @@ var varMsixStorageName = avdUseCustomNaming
     ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' 
     : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varAlaWorkspaceName = avdUseCustomNaming 
+var varAlaWorkspaceName = UseCustomNaming 
     ? avdAlaWorkspaceCustomName 
-    : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
+    : alaExistingWorkspaceResourceId
 //var varDataCollectionRulesName = 'microsoft-avdi-${varSessionHostLocationLowercase}' // 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
-var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-pdsh'
+var varDataCollectionRulesName = UseCustomNaming
+    ? 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
+    : existingavdDCRResourceId
+
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
     : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
@@ -1110,7 +1123,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy-pers
         monitoringRgName: varMonitoringRgName
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
         alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
-        alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
+        alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : alaExistingWorkspaceResourceId
         alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
         subscriptionId: avdWorkloadSubsId
 

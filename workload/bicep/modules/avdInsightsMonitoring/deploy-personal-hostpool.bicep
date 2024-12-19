@@ -112,7 +112,7 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
 }
 
 // data collection rules
-module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
+module dataCollectionRule './.bicep/dataCollectionRules.bicep' = if (deployAlaWorkspace) {
   scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
   name: 'DCR-${time}'
   params: {

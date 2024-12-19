@@ -217,7 +217,7 @@
             "value": false
         },
         "deployAlaWorkspace": {
-            "value": true
+            "value": false
         },  
         "alaExistingWorkspaceResourceId": {
             "value": ""
