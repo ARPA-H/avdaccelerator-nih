@@ -364,9 +364,10 @@ var varFslogixFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-// var varFslogixStorageFqdn = createAvdFslogixDeployment 
-//     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
-//     : ''
+var varFslogixStorageFqdn = createAvdFslogixDeployment 
+    ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
+    : ''
+
 var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
@@ -378,7 +379,7 @@ var varFslogixSharePath = createAvdFslogixDeployment
     : ''
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
-var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
+var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration-arpah.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
@@ -585,6 +586,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       vTpmEnabled: vTpmEnabled
       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
       securityPrincipalId: securityPrincipalId
+      fslogixStorageFqdn: varFslogixStorageFqdn
     }
   }
 ]
