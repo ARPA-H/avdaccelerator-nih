@@ -380,7 +380,7 @@ var varFslogixSharePath = createAvdFslogixDeployment
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration-arpah.ps1'
-var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
+var varSessionHostConfigurationScript = './Set-SessionHostConfiguration-arpah.ps1'
 var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
