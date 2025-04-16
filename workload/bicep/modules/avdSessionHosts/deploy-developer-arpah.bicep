@@ -125,8 +125,8 @@ param domainJoinUserName string
 // @sys.description('Host pool resource ID.')
 // param hostPoolResourceId string
 
-// // @sys.description('FSLogix storage account FDQN.')
-// // param fslogixStorageFqdn string
+@sys.description('FSLogix storage account FDQN.')
+param fslogixStorageFqdn string
 
 // @sys.description('URI for AVD session host configuration script URI.')
 // param sessionHostConfigurationScriptUri string
@@ -606,28 +606,50 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
   
 
 // Apply AVD session host configurations
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId + 1}-${count}-${time}'
-    params: {
-      baseScriptUri: sessionHostConfigurationScriptUri
-      fslogix: configureFslogix
-      fslogixSharePath: fslogixSharePath
-      fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
-      hostPoolResourceId: hostPoolResourceId
-      identityDomainName: identityDomainName
-      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
-      identityServiceProvider: identityServiceProvider
-      location: location
-      name: '${namePrefix}${padLeft(count, 4, '0')}'
-      scriptName: sessionHostConfigurationScript
-      vmSize: vmSize
-    }
-    dependsOn: [
-      sessionHosts
-      ama
-    ]
+// module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-Config-${batchId + 1}-${count}-${time}'
+//     params: {
+//       baseScriptUri: sessionHostConfigurationScriptUri
+//       fslogix: configureFslogix
+//       fslogixSharePath: fslogixSharePath
+//       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+//       hostPoolResourceId: hostPoolResourceId
+//       identityDomainName: identityDomainName
+//       extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+//       identityServiceProvider: identityServiceProvider
+//       location: location
+//       name: '${namePrefix}${padLeft(count, 4, '0')}'
+//       scriptName: sessionHostConfigurationScript
+//       vmSize: vmSize
+//     }
+//     dependsOn: [
+//       sessionHosts
+//       ama
+//     ]
+//   }
+
+module sessionHostConfiguration '.bicep/configureSessionHost-arpah.bicep' = {
+  scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+  name: 'SH-Config-${batchId + 1}-${count}-${time}'
+  params: {
+    baseScriptUri: sessionHostConfigurationScriptUri
+    fslogix: configureFslogix
+    fslogixFileShare: fslogixSharePath
+    fslogixStorageFqdn: fslogixStorageFqdn
+    hostPoolResourceId: hostPoolResourceId
+    identityDomainName: identityDomainName
+    identityServiceProvider: identityServiceProvider
+    location: location
+    name: '${namePrefix}${padLeft(count, 4, '0')}'
+    scriptName: sessionHostConfigurationScript
+    vmSize: vmSize
   }
+  dependsOn: [
+    sessionHosts
+    ama
+  ]
+}
 
 
 module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {

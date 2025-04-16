@@ -365,9 +365,9 @@ var varFslogixFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-// var varFslogixStorageFqdn = createAvdFslogixDeployment 
-//     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
-//     : ''
+var varFslogixStorageFqdn = createAvdFslogixDeployment 
+    ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
+    : ''
 var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
@@ -587,6 +587,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       vTpmEnabled: vTpmEnabled
       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
       securityPrincipalId: securityPrincipalId
+      fslogixStorageFqdn: varFslogixStorageFqdn
     }
   }
 ]
