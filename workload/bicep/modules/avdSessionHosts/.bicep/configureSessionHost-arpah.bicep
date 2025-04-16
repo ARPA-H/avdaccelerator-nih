@@ -77,8 +77,15 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existin
   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
 }
 
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
+  name: name
+}
+
+
 resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
-  name: '${name}/SessionHostConfig'
+  //name: '${name}/SessionHostConfig'
+  name: 'SessionHostConfig'
+  parent: virtualMachine
   location: location
   properties: {
     publisher: 'Microsoft.Compute'
