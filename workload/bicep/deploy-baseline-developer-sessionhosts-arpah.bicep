@@ -94,7 +94,7 @@ param availability string = 'AvailabilityZones'
   '2'
   '3'
 ])
-param availabilityZones array = ['1', '2', '3']
+param availabilityZones array = ['2', '3']
 
 
 // @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
