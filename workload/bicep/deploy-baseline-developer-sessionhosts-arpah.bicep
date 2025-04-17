@@ -79,7 +79,7 @@ param avdDeploySessionHosts bool = true
 param avdDeploySessionHostsCount int = 2
 
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
-param avdSessionHostCountIndex int = 0
+param avdSessionHostCountIndex int = 1
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
 @allowed([
@@ -94,8 +94,7 @@ param availability string = 'AvailabilityZones'
   '2'
   '3'
 ])
-// param availabilityZones array = ['1', '2', '3']
-param availabilityZones array = ['2', '3']
+param availabilityZones array = ['1', '2', '3']
 
 
 // @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
@@ -365,9 +364,9 @@ var varFslogixFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varFslogixStorageFqdn = createAvdFslogixDeployment 
-    ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
-    : ''
+// var varFslogixStorageFqdn = createAvdFslogixDeployment 
+//     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
+//     : ''
 var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
@@ -379,9 +378,9 @@ var varFslogixSharePath = createAvdFslogixDeployment
     : ''
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/shconfigissue/workload/'
-var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration-arpah.ps1'
-var varSessionHostConfigurationScript = './Set-SessionHostConfiguration-arpah.ps1'
-var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
+var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
+var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
+var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0
@@ -531,9 +530,9 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
 // ]
 
 // Session hosts
-// @batchSize(3)
+@batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-  for i in range(1, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
+  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i}-${time}'
     params: {
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
@@ -544,10 +543,9 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       configureFslogix: createAvdFslogixDeployment
-      // count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
-      //   ? varMaxSessionHostsDivisionRemainderValue
-      //   : varMaxSessionHostsPerTemplate
-      count: i
+      count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+        ? varMaxSessionHostsDivisionRemainderValue
+        : varMaxSessionHostsPerTemplate
       countIndex: i == 1
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
@@ -587,7 +585,6 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       vTpmEnabled: vTpmEnabled
       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
       securityPrincipalId: securityPrincipalId
-      fslogixStorageFqdn: varFslogixStorageFqdn
     }
   }
 ]

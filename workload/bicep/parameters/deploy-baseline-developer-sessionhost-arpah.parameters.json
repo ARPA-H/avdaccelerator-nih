@@ -54,7 +54,7 @@
           "value": 1
       },
       "avdSessionHostCountIndex": {
-          "value": 0
+          "value": 1
       },
       "avdSessionHostsSize": {
           "value": "Standard_E4s_v5"
