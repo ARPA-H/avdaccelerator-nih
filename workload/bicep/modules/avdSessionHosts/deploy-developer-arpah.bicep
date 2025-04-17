@@ -345,7 +345,7 @@ module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-mach
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'AzureMonitorWindowsAgent'
+        name: 'GuestAttestation'
         publisher: 'Microsoft.Azure.Security.WindowsAttestation'
         type: 'GuestAttestation'
         typeHandlerVersion: '1.0'
