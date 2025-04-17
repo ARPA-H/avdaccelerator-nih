@@ -63,7 +63,7 @@
             "value": "Premium_LRS"
         },
         "avdOsImage": {
-            "value": "win11-24h2-avd-m365"
+            "value": "win11_24h2_office"
         },
         "securityType": {
             "value": "TrustedLaunch"
