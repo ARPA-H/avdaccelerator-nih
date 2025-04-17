@@ -143,6 +143,10 @@ param deployAntiMalwareExt bool
 @sys.description('The ARPA-H Developer Entra ID security group')
 param securityPrincipalId string
 
+@description('Optional. Required if name is specified. Password of the user specified in user parameter.')
+@secure()
+param domainJoinPassword string = ''
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -235,7 +239,8 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         // ADDS or EntraDS domain join.
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            // enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            enabled: false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -379,7 +384,8 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
+    // name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${batchId}-${i - 1}-${time}'
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -398,3 +404,37 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         monitoring
     ]
 }]
+
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+    // name: 'Dom-Join-${batchId}-${i}-${time}'
+    name: 'Dom-Join-${batchId}-${i - 1}-${time}'
+    params: {
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'DomainJoin'
+      location: location
+      publisher: 'Microsoft.Compute'
+      type: 'JsonADDomainExtension'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: false
+      settings: {
+            name: identityDomainName
+            ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+            user: domainJoinUserName
+            restart: 'true'
+            options: '3'
+        }
+      
+      supressFailures: false
+      tags: tags
+      protectedSettings: {
+        Password: domainJoinPassword
+        }
+    }
+    dependsOn: [
+        sessionHosts
+        monitoring
+    ]
+  }]

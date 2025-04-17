@@ -351,8 +351,8 @@ var varFslogixSharePath = createAvdFslogixDeployment
     : ''
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
-var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
-var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
+var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration-arpah.ps1'
+var varSessionHostConfigurationScript = './Set-SessionHostConfiguration-arpah.ps1'
 var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
@@ -459,6 +459,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
+      domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
       wrklKvName: varWrklKvName
       serviceObjectsRgName: varServiceObjectsRgName
       identityDomainName: identityDomainName
