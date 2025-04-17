@@ -62,7 +62,7 @@
         "avdSessionHostDiskType": {
             "value": "Premium_LRS"
         },
-        "mpImageSku": {
+        "avdOsImage": {
             "value": "win11-24h2-avd-m365"
         },
         "securityType": {
@@ -94,9 +94,6 @@
         },
         "avdHostPoolType": {
           "value": "Pooled"
-        },
-        "maxSessionHostsPerTemplate": {
-          "value": 10
         }
     }
   }

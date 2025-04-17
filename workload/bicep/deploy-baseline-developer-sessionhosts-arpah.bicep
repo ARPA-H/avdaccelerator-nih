@@ -280,6 +280,8 @@ param securityPrincipalId string = ''
 @sys.description('AVD host pool type. (Default: Pooled)')
 param avdHostPoolType string = 'Pooled'
 
+// param maxSessionHostsPerTemplate int = 10
+
 // =========== //
 // Variable declaration //
 // =========== //
