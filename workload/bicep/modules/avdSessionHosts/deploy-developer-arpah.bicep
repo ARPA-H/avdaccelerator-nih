@@ -373,7 +373,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = [
     for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i - 1}-${time}'
+    name: 'SH-${batchId + 1}-${i + countIndex}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
