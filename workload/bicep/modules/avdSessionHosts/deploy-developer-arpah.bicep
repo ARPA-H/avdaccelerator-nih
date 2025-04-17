@@ -359,9 +359,9 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        //sessionHostsAntimalwareExtension
-        alaWorkspace
-        sessionHosts
+        sessionHostsAntimalwareExtension
+        // alaWorkspace
+        // sessionHosts
     ]
 }]
 
@@ -378,30 +378,6 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
         //sessionHostsAntimalwareExtension
         sessionHosts
         alaWorkspace
-    ]
-}]
-
-// Apply AVD session host configurations
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    // name: 'SH-Config-${batchId}-${i}-${time}'
-    name: 'SH-Config-${batchId}-${i - 1}-${time}'
-    params: {
-        location: location
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
-        baseScriptUri: sessionHostConfigurationScriptUri
-        scriptName: sessionHostConfigurationScript
-        fslogix: createAvdFslogixDeployment
-        identityDomainName: identityDomainName
-        vmSize: vmSize
-        fslogixFileShare: fslogixSharePath
-        fslogixStorageFqdn: fslogixStorageFqdn
-        identityServiceProvider: identityServiceProvider
-    }
-    dependsOn: [
-        sessionHosts
-        monitoring
     ]
 }]
 
@@ -435,6 +411,33 @@ module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine
     }
     dependsOn: [
         sessionHosts
+        dataCollectionRuleAssociation
         monitoring
     ]
   }]
+
+// Apply AVD session host configurations
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    // name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${batchId}-${i - 1}-${time}'
+    params: {
+        location: location
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        baseScriptUri: sessionHostConfigurationScriptUri
+        scriptName: sessionHostConfigurationScript
+        fslogix: createAvdFslogixDeployment
+        identityDomainName: identityDomainName
+        vmSize: vmSize
+        fslogixFileShare: fslogixSharePath
+        fslogixStorageFqdn: fslogixStorageFqdn
+        identityServiceProvider: identityServiceProvider
+    }
+    dependsOn: [
+        sessionHosts
+        // monitoring
+        vm_domainJoinExtension
+    ]
+}]
+
