@@ -1,4 +1,4 @@
-﻿metadata name = 'AVD Accelerator - Developer Host Pool Deployment'
+metadata name = 'AVD Accelerator - Developer Host Pool Deployment'
 metadata description = 'AVD Accelerator - Deployment Developer Host Pool'
 
 targetScope = 'subscription'
@@ -153,6 +153,10 @@ param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment
 // @maxLength(64)
 // @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
 // param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
+
+// @maxLength(64)
+// @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
+// param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
@@ -439,7 +443,6 @@ var varPersonalScalingPlanSchedules = [
     rampUpActionOnLogoff: 'Deallocate'
   }
 ]
-
 var varPooledScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -594,6 +597,18 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2024-03-01' = if (
     }
 }
 
+// retrieve existing resources
+resource keyVaultExisting 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
+  name: varWrklKvName
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+}
+
+resource logAnalyticsWorkspaceExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+  name: avdAlaWorkspaceCustomName
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varMonitoringRgName}')
+}
+
+
 module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
@@ -637,15 +652,4 @@ module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bice
       // privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
       // privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
     }
-}
-
-// retrieve existing resources
-resource keyVaultExisting 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
-  name: varWrklKvName
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
-}
-
-resource logAnalyticsWorkspaceExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: avdAlaWorkspaceCustomName
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varMonitoringRgName}')
 }
