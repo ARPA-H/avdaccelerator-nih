@@ -147,6 +147,8 @@ param securityPrincipalId string
 @secure()
 param domainJoinPassword string = ''
 
+// param hostPoolName string = '' 
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -413,6 +415,10 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     ]
 }]
 
+// resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+//     name: hostPoolName
+//     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+// }
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
