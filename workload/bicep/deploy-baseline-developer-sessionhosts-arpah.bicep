@@ -498,7 +498,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       deployAntiMalwareExt: deployAntiMalwareExt
       securityPrincipalId: securityPrincipalId
       //hostPoolResourceId: existingHostPool.id
-      hostPoolName: avdHostPoolCustomName
+      hostPoolName: varHostPoolName
     }
   }
 ]
