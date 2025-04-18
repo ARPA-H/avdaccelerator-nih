@@ -444,6 +444,14 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
 //     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
 // }
 
+// resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+//     parent: keyVaultExisting
+//     name: secretName
+//     properties: {
+//       value: secretValue
+//     }
+//   }
+
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {

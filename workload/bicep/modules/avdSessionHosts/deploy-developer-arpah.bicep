@@ -414,40 +414,6 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     ]
 }]
 
-// module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
-//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-//     //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
-//     // name: 'Dom-Join-${batchId}-${i}-${time}'
-//     name: 'Dom-Join-${batchId}-${i - 1}-${time}'
-//     params: {
-//       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-//       name: 'DomainJoin'
-//       location: location
-//       publisher: 'Microsoft.Compute'
-//       type: 'JsonADDomainExtension'
-//       typeHandlerVersion: '1.3'
-//       autoUpgradeMinorVersion: true
-//       enableAutomaticUpgrade: false
-//       settings: {
-//             name: identityDomainName
-//             ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-//             user: domainJoinUserName
-//             restart: 'true'
-//             options: '3'
-//         }
-      
-//       supressFailures: false
-//       tags: tags
-//       protectedSettings: {
-//         Password: domainJoinPassword
-//         }
-//     }
-//     dependsOn: [
-//         sessionHosts
-//         dataCollectionRuleAssociation
-//         monitoring
-//     ]
-//   }]
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
@@ -472,3 +438,38 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     ]
 }]
 
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+    // name: 'Dom-Join-${batchId}-${i}-${time}'
+    name: 'Dom-Join-${batchId}-${i - 1}-${time}'
+    params: {
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'DomainJoin'
+      location: location
+      publisher: 'Microsoft.Compute'
+      type: 'JsonADDomainExtension'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: false
+      settings: {
+            name: identityDomainName
+            ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+            user: domainJoinUserName
+            restart: 'true'
+            options: '3'
+        }
+      
+      supressFailures: false
+      tags: tags
+      protectedSettings: {
+        Password: domainJoinPassword
+        }
+    }
+    dependsOn: [
+        // sessionHosts
+        // dataCollectionRuleAssociation
+        // monitoring
+        sessionHostConfiguration
+    ]
+  }]
