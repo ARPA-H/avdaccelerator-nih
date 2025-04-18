@@ -32,20 +32,20 @@ param fslogixStorageFqdn string
 @sys.description('Session host VM size.')
 param vmSize string
 
-// @sys.description('AVD Host Pool registration token')
-// @secure()
-// param hostPoolToken string
+@sys.description('AVD Host Pool registration token')
+@secure()
+param hostPoolToken string
 
-@sys.description('AVD Host Pool Resource Id')
-param hostPoolResourceId string
+// @sys.description('AVD Host Pool Resource Id')
+// param hostPoolResourceId string
 
 // =========== //
 // Variable declaration //
 // =========== //
 // var ScreenCaptureProtection = true
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
-// var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -fslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
-var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -fslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
+var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -fslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
+//var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -fslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
 
 var varAmdVmSizes = [
   'Standard_NV4as_v4'
@@ -77,10 +77,10 @@ var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
 // Deployments //
 // =========== //
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
-  name: last(split(hostPoolResourceId, '/'))
-  scope: resourceGroup(split(hostPoolResourceId, '/')[4])
-}
+// resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+//   name: last(split(hostPoolResourceId, '/'))
+//   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
+// }
 
 resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   name: '${name}/SessionHostConfig'

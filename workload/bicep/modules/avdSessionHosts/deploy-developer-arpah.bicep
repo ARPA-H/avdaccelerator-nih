@@ -148,7 +148,7 @@ param securityPrincipalId string
 param domainJoinPassword string = ''
 
 @sys.description('Host pool resource ID.')
-param hostPoolResourceId string
+param hostPoolName string
 
 // =========== //
 // Variable declaration //
@@ -418,6 +418,11 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     ]
 }]
 
+resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+    name: hostPoolName
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+}
+
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
@@ -426,8 +431,9 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        // hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
-        hostPoolResourceId: hostPoolResourceId
+        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        hostPoolToken: existingHostPool.listRegistrationTokens().value[0].token
+        //hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment
