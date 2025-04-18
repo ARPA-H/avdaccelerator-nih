@@ -147,6 +147,9 @@ param securityPrincipalId string
 @secure()
 param domainJoinPassword string = ''
 
+@sys.description('Host pool resource ID.')
+param hostPoolResourceId string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -457,7 +460,8 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        // hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment

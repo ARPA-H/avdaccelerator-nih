@@ -438,6 +438,12 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
   }  
 
 // Session hosts
+
+resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+    name: avdHostPoolCustomName
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
+}
+
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
@@ -491,6 +497,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       dataCollectionRuleId: dataCollectionRulesExisting.id
       deployAntiMalwareExt: deployAntiMalwareExt
       securityPrincipalId: securityPrincipalId
+      hostPoolResourceId: existingHostPool.id
     }
   }
 ]
