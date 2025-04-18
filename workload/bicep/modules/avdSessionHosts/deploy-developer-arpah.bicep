@@ -337,40 +337,39 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
 
-// module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
-//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-//     name: 'SH-GA-${batchId}-${i - 1}-${time}'
+module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'SH-GA-${batchId}-${i - 1}-${time}'
+    params: {
+        location: location
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        name: 'GuestAttestation'
+        publisher: 'Microsoft.Azure.Security.WindowsAttestation'
+        type: 'GuestAttestation'
+        typeHandlerVersion: '1.0'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: true
+        settings: {
+            AttestationConfig: {
+                MaaSettings: {
+                    maaEndpoint: ''
+                    maaTenantName: 'Guest Attestation'
+                }
+                AscSettings: {
+                    ascReportingEndpoint: ''
+                    ascReportingFrequency: ''
+                }
+                useCustomToken: 'false'
+                disableAlerts: 'false'
+            }
+        }
+    }
 
-//     params: {
-//         location: location
-//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-//         name: 'GuestAttestation'
-//         publisher: 'Microsoft.Azure.Security.WindowsAttestation'
-//         type: 'GuestAttestation'
-//         typeHandlerVersion: '1.0'
-//         autoUpgradeMinorVersion: true
-//         enableAutomaticUpgrade: true
-//         settings: {
-//             AttestationConfig: {
-//                 MaaSettings: {
-//                     maaEndpoint: ''
-//                     maaTenantName: 'Guest Attestation'
-//                 }
-//                 AscSettings: {
-//                     ascReportingEndpoint: ''
-//                     ascReportingFrequency: ''
-//                 }
-//                 useCustomToken: 'false'
-//                 disableAlerts: 'false'
-//             }
-//         }
-//     }
-
-//     dependsOn: [
-//         alaWorkspace
-//         sessionHosts
-//     ]
-//   }]
+    dependsOn: [
+        alaWorkspace
+        sessionHosts
+    ]
+  }]
 
 // Add monitoring extension to session host
 module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
