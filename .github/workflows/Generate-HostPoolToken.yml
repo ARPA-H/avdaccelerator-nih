@@ -34,11 +34,6 @@ jobs:
         echo ${{ steps.ip.outputs.ipv4 }}
         echo ${{ steps.ip.outputs.ipv6 }}
 
-    # - name: Install Azure CLI
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install azure-cli
-
     - name: Add temporary network rule
       run: |
         az keyvault network-rule add --name ${{ secrets.KEY_VAULT }} --ip-address ${{ steps.ip.outputs.ipv4 }}
@@ -48,8 +43,6 @@ jobs:
       env:
         HostPoolResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
         HostPoolName: 'vdpool-developer-personal-${{ github.event.inputs.environment }}-use2-001'
-        # KeyVaultName: 'SessionDesktop'
-  
       with:
         inlineScript: ./.github/workflows/scripts/Generate-HostPoolToken.ps1 -HostPoolResourceGroupName ${{ env.HostPoolResourceGroupName }} -HostPoolName ${{ env.HostPoolName }} -KeyVaultName ${{ secrets.KEY_VAULT }}
         azPSVersion: "latest"

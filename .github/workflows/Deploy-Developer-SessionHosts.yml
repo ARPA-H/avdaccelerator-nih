@@ -45,6 +45,14 @@ on:
         default: false
 
 jobs:
+  deploy-developer-hostpool:
+    name: deploy developer hostpool
+    uses: ./.github/workflows/Generate-HostPoolToken.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+  
+  
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
