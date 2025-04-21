@@ -439,10 +439,10 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
 
 // Session hosts
 
-resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
-    name: avdHostPoolCustomName
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
-}
+// resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+//     name: avdHostPoolCustomName
+//     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
+// }
 
 // resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
 //     parent: keyVaultExisting
@@ -452,14 +452,14 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
 //     }
 //   }
 
-module genHostPoolRegistrationToken './modules/avdSessionHosts/.bicep/addHostPoolRegistrationTokenToKeyvault.bicep' = if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
-    name: 'GenHostPoolRegistrationToken-${time}'
-    params: {
-        keyVaultName: varWrklKvName
-        hostPoolRegistrationToken: '${existingHostPool.listRegistrationTokens().value[0].token}'
-    }
-}
+// module genHostPoolRegistrationToken './modules/avdSessionHosts/.bicep/addHostPoolRegistrationTokenToKeyvault.bicep' = if (avdDeploySessionHosts) {
+//     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+//     name: 'GenHostPoolRegistrationToken-${time}'
+//     params: {
+//         keyVaultName: varWrklKvName
+//         hostPoolRegistrationToken: '${existingHostPool.listRegistrationTokens().value[0].token}'
+//     }
+// }
 
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
@@ -518,7 +518,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       //hostPoolName: varHostPoolName
     }
     dependsOn: [
-        genHostPoolRegistrationToken
+        // genHostPoolRegistrationToken
     ]
   }
 ]
