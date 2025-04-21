@@ -457,7 +457,7 @@ module genHostPoolRegistrationToken './modules/avdSessionHosts/.bicep/addHostPoo
     name: 'GenHostPoolRegistrationToken-${time}'
     params: {
         keyVaultName: varWrklKvName
-        hostPoolRegistrationToken: existingHostPool.listRegistrationTokens().value[0].token
+        hostPoolRegistrationToken: '${existingHostPool.listRegistrationTokens().value[0].token}'
     }
 }
 
