@@ -191,14 +191,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Session hosts
-module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${count - 1}-${time}'
+    name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
-        name: '${namePrefix}${padLeft(count , 4, '0')}'
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        zone: useAvailabilityZones ? (count % 3 + 1) : 0
+        zone: useAvailabilityZones ? (i % 3 + 1) : 0
         managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
             systemAssigned: true
         }: null
@@ -216,7 +216,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                name: 'nic-01-${namePrefix}${padLeft(count, 4, '0')}'
+                name: 'nic-01-${namePrefix}${padLeft((i + countIndex), 4, '0')}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(asgResourceId) ? [
@@ -284,7 +284,54 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
     dependsOn: [
         keyVault
     ]
-}
+}]
+
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for i in range(1, count): {
+//     scope: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//     name: guid(storageAccount.id, devSecurityGroupPrincipalId, roleDefinitionResourceId)
+//     properties: {
+//       //roleDefinitionId: roleDefinitionResourceId
+//       roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
+//       principalId: '19cfe65e-52b6-49e5-8155-02843498171d'
+//       principalType: 'Group'
+//     }
+// }]
+
+
+
+// Add antimalware extension to session host.
+// module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+//     params: {
+//         location: location
+//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         name: 'MicrosoftAntiMalware'
+//         publisher: 'Microsoft.Azure.Security'
+//         type: 'IaaSAntimalware'
+//         typeHandlerVersion: '1.3'
+//         autoUpgradeMinorVersion: true
+//         enableAutomaticUpgrade: false
+//         settings: {
+//             AntimalwareEnabled: true
+//             RealtimeProtectionEnabled: 'true'
+//             ScheduledScanSettings: {
+//                 isEnabled: 'true'
+//                 day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+//                 time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+//                 scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+//             }
+//             Exclusions: createAvdFslogixDeployment ? {
+//                 Extensions: '*.vhd;*.vhdx'
+//                 Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+//                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+//             } : {}
+//         }
+//     }
+//     dependsOn: [
+//         sessionHosts
+//     ]
+// }]
 
 // Call to the ALA workspace
 resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -292,12 +339,12 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
 
-module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
+module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-GA-${batchId}-${count - 1}-${time}'
+    name: 'SH-GA-${batchId}-${i - 1}-${time}'
     params: {
         location: location
-        virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'GuestAttestation'
         publisher: 'Microsoft.Azure.Security.WindowsAttestation'
         type: 'GuestAttestation'
@@ -324,15 +371,15 @@ module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-mach
         alaWorkspace
         sessionHosts
     ]
-  }
+  }]
 
 // Add monitoring extension to session host
-module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
+module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${count - 1}-${time}'
+    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
     params: {
         location: location
-        virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'AzureMonitorWindowsAgent'
         publisher: 'Microsoft.Azure.Monitor'
         type: 'AzureMonitorWindowsAgent'
@@ -351,14 +398,14 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         sessionHosts
         alaWorkspace
     ]
-}
+}]
 
 // Data collection rule association
-module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = if (deployMonitoring) {
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${count - 1}-${time}'
+    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
     params: {
-        virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         dataCollectionRuleId: dataCollectionRuleId
     }
     dependsOn: [
@@ -366,7 +413,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
         //sessionHostsAntimalwareExtension
         alaWorkspace
     ]
-}
+}]
 
 // resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
 //     name: hostPoolName
@@ -374,12 +421,12 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // }
 
 // Apply AVD session host configurations
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${count - 1}-${time}'
+    name: 'SH-Config-${batchId}-${i - 1}-${time}'
     params: {
         location: location
-        name: '${namePrefix}${padLeft(count, 4, '0')}'
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
@@ -394,13 +441,13 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
         sessionHosts
         monitoring
     ]
-}
+}]
 
-module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Dom-Join-${batchId}-${count - 1}-${time}'
+    name: 'Dom-Join-${batchId}-${i - 1}-${time}'
     params: {
-      virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       name: 'DomainJoin'
       location: location
       publisher: 'Microsoft.Compute'
@@ -428,4 +475,4 @@ module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine
         // monitoring
         sessionHostConfiguration
     ]
-  }
+  }]

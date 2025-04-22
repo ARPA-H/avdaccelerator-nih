@@ -461,9 +461,9 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
 //     }
 // }
 
-//@batchSize(3)
+@batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-  for i in range(1, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
+  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
@@ -475,8 +475,12 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       createIntuneEnrollment: createIntuneEnrollment
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
-      count: i
-      countIndex: i - 1
+      count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+        ? varMaxSessionHostsDivisionRemainderValue
+        : varMaxSessionHostsPerTemplate
+      countIndex: i == 1
+        ? avdSessionHostCountIndex
+        : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
       wrklKvName: varWrklKvName
