@@ -195,7 +195,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${count - 1}-${time}'
     params: {
-        name: '${namePrefix}${padLeft(count , 4, '0')}'
+        name: '${namePrefix}${padLeft(count, 4, '0')}'
         location: location
         timeZone: timeZone
         zone: useAvailabilityZones ? (count % 3 + 1) : 0
