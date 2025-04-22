@@ -445,8 +445,6 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
 
 module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
-    // name: 'Dom-Join-${batchId}-${i}-${time}'
     name: 'Dom-Join-${batchId}-${i - 1}-${time}'
     params: {
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'

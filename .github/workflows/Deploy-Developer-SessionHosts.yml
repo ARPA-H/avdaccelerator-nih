@@ -45,13 +45,12 @@ on:
         default: false
 
 jobs:
-  deploy-developer-hostpool:
+  generate-hostpool-token:
     name: deploy developer hostpool
     uses: ./.github/workflows/Generate-HostPoolToken.yml
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
-  
   
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -61,7 +60,6 @@ jobs:
       SESSION_HOST_PREFIX: ${{ inputs.environment == 'Prod' && 'avddhpp' || 'avddhpt' }}
 
     steps:
-
     - name: Checkout code
       uses: actions/checkout@main
 
