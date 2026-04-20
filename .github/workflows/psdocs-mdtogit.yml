@@ -28,14 +28,18 @@ env:
   # github_pr_number: ${{ github.event.number }}
   # github_pr_repo: ${{ github.event.pull_request.head.repo.full_name }}
 
+# Set minimal permissions at workflow level (security best practice)
 permissions:
-  contents: write
-  pull-requests: read
+  contents: read
 
 jobs:
   arm_docs:
     name: Generate Markdown
     runs-on: ubuntu-latest
+    # Grant write permission only to this job that needs it
+    permissions:
+      contents: write
+      pull-requests: read
 
     steps:
       - name: Checkout
