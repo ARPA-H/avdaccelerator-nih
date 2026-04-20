@@ -35,6 +35,11 @@ $Log = "C:\PostConfig.log"
 New-Item $Log
 Get-Date | Out-file $Log
 
+# SECURITY NOTE: Local VM credential creation for App Attach VM configuration.
+# BEST PRACTICE: $VMUserPassword should come from Azure Key Vault:
+#   $VMUserPassword = Get-AzKeyVaultSecret -VaultName '<vault>' -Name '<secret>' -AsPlainText
+# PSScriptAnalyzer: Suppress security warning for VM automation credential
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 $Username = $ENV:COMPUTERNAME + '\' + $VMUserName
 $Password = ConvertTo-SecureString -String $VMUserPassword -AsPlainText -Force
 [pscredential]$VMCredential = New-Object System.Management.Automation.PSCredential ($Username, $Password)

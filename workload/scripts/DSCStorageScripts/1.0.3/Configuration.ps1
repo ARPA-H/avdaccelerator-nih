@@ -138,6 +138,12 @@ Configuration DomainJoinFileShare
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
 
+    # SECURITY NOTE: This DSC configuration requires plain text password conversion.
+    # BEST PRACTICE: Callers should retrieve $AdminUserPassword from Azure Key Vault using:
+    #   Get-AzKeyVaultSecret -VaultName '<vault-name>' -Name '<secret-name>' -AsPlainText
+    # This pattern is required for DSC credential handling.
+    # PSScriptAnalyzer: Suppress security warning for DSC credential requirement
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
     $secStringPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
     $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
 

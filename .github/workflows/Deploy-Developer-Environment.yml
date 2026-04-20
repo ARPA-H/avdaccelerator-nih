@@ -1,5 +1,9 @@
 name: Deploy Developer AVD to NIH Environment
 
+permissions:
+  contents: read
+  id-token: write
+
 on:
     workflow_dispatch:
       inputs:

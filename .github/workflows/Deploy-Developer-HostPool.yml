@@ -1,5 +1,9 @@
 name: Deploy Developer HostPool to NIH Environment
 
+permissions:
+  contents: read
+  id-token: write
+
 on:
   # for running manually  
   workflow_dispatch:
@@ -51,16 +55,16 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@main
+      uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.2.2
 
     - name: Log into Azure
-      uses: azure/login@v1
+      uses: azure/login@cb79c773a3cfa27f31f25eb3f677781210c9ce3d # v1.7.0
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }} 
         enable-AzPSSession: true
 
     - name: Deploy deployment stack to the ${{ inputs.environment }} environment
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
       with:
         inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-hostpool-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-hostpool-arpah.parameters.json' `
           -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
@@ -82,7 +86,7 @@ jobs:
     #     errorActionPreference: continue
 
     - name: Update AVD Application Group Display Name in the ${{ inputs.environment }} environment
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
       env:
         ResourceGroupName: 'avd-nih-arpah-${{ inputs.environment }}-use2-service-objects'
         ApplicationGroupName: 'vdag-desktop-developer-${{ inputs.hostpool_type }}-${{ inputs.environment }}-use2-001'
