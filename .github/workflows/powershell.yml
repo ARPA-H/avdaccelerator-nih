@@ -30,6 +30,12 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.2.2
 
+      - name: Install PSDesiredStateConfiguration module
+        # Required so PSScriptAnalyzer can resolve Import-DscResource in DSC configuration scripts.
+        # PsDesiredStateConfiguration is a Windows inbox module in PS5.1 but not in PS7 (pwsh).
+        shell: pwsh
+        run: Install-Module -Name PSDesiredStateConfiguration -Force -Scope CurrentUser -AllowClobber
+
       - name: Run PSScriptAnalyzer
         uses: microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f
         with:
