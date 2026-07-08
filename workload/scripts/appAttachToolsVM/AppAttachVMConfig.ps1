@@ -8,6 +8,7 @@ Updates:
                       version for MSIX Tools install. Changed Install from Add-AppPackage to Add-AppxProvisionedPackage.
 #>
 
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification='VM automation credential creation; caller must source VMUserPassword from Azure Key Vault.')]
 Param(
 
     [parameter(Mandatory)]
@@ -35,11 +36,6 @@ $Log = "C:\PostConfig.log"
 New-Item $Log
 Get-Date | Out-file $Log
 
-# SECURITY NOTE: Local VM credential creation for App Attach VM configuration.
-# BEST PRACTICE: $VMUserPassword should come from Azure Key Vault:
-#   $VMUserPassword = Get-AzKeyVaultSecret -VaultName '<vault>' -Name '<secret>' -AsPlainText
-# PSScriptAnalyzer: Suppress security warning for VM automation credential
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 $Username = $ENV:COMPUTERNAME + '\' + $VMUserName
 $Password = ConvertTo-SecureString -String $VMUserPassword -AsPlainText -Force
 [pscredential]$VMCredential = New-Object System.Management.Automation.PSCredential ($Username, $Password)
