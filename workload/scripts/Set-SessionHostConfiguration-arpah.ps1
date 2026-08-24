@@ -66,8 +66,15 @@ param(
 )
 $Counter = 0
 do {
-        Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'SilentlyContinue'
-        if ($Counter -gt 0) {
+        # Invoke-WebRequest can raise a terminating WebException on HTTP errors even with -ErrorAction SilentlyContinue,
+        # so it must be caught explicitly or a transient failure would skip the remaining retries.
+        try {
+                Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'Stop'
+        }
+        catch {
+                Write-Log -Message "Download attempt $($Counter + 1) of $URL failed: $_" -Type 'WARN'
+        }
+        if (!(Test-Path $FileName) -and $Counter -lt 8) {
                 Start-Sleep -Seconds 30
         }
         $Counter++
